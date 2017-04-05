@@ -1,132 +1,197 @@
-# AdonisJs JSON API Starter Kit
+# JSON API Blog Example
 
-This is a base project for building JSON APIs with Adonis.js.
+This api has the following endpoints:
 
-The starter kit has a few modifications beyond the normal base project to make API development faster and easier.
+* GET - `/posts` - Get a collection of all posts
+* POST - `/posts` - Create a new post
+* GET - `/posts/:post_id` - Get a single post based on `:post_id` from the URL
+* PATCH - `/posts/:post_id` - Update a single post based on `:post_id` from the URL
+* DELETE - `/posts/:post_id` - Delete a post based on `:post_id` from the URL
+* GET - `/posts/:post_id/comments` - Get all comments related to the post based on `post_id` from the URL
+* POST - `/comments` - Create a new comment (requires a related post to attach to)
+* GET - `/comments/:comment_id` - Get a single comment based on `:comment_id` from the URL
+* PATCH - `/comments/:comment_id` - Update a single comment based on `:comment_id` from the URL
+* DELETE - `/comments/:comment_id` - Delete a comment based on `:comment_id` from the URL
 
-* DB Configuration for Heroku Postgres
-* Adonis JSON API Installed
-* Adonis Generators Installed
-* Default to using JWT Auth
+## Example GET `/posts`
 
-This starter kit also comes with a few default routes and controllers to make secure registration and authentication easier.
+Example cURL:
 
-## `/api/users` - POST
-
-This is a JSON API resource for creating users.
-For example the following request body would create a new user:
-
-```json
-{
-  "data": {
-    "attributes": {
-      "email": "admin@admin.com",
-      "password": "password"
-    }
-  }
-}
+```bash
+curl --request GET \
+  --url http://localhost:3333/posts
 ```
 
-This endpoint will store the new user and hash the user's password.
-
-## `/api/users` - GET
-
-This JSON API endpoint allows you to see all registered users in the application.
-Requests to this endpoint need to be authenticated using an API token from the `/api/token-auth` endpoint.
-
-Here is an example response from this endpoint:
+Example Response Body:
 
 ```json
 {
+  "links": {
+    "self": "/posts"
+  },
   "data": [
     {
-      "type": "users",
-      "id": "1",
+      "type": "posts",
+      "id": 1,
       "attributes": {
-        "email": "admin@admin.com",
-        "password": "password"
+        "title": "My First Post",
+        "content": "This is a new post"
+      },
+      "relationships": {
+        "comments": {
+          "links": {
+            "related": "/posts/1/comments"
+          }
+        }
+      }
+    },
+    {
+      "type": "posts",
+      "id": 2,
+      "attributes": {
+        "title": "My Second Post",
+        "content": "This is another post from me..."
+      },
+      "relationships": {
+        "comments": {
+          "links": {
+            "related": "/posts/2/comments"
+          }
+        }
+      }
+    },
+    {
+      "type": "posts",
+      "id": 3,
+      "attributes": {
+        "title": "This is my title",
+        "content": "This is my content"
+      },
+      "relationships": {
+        "comments": {
+          "links": {
+            "related": "/posts/3/comments"
+          }
+        }
       }
     }
   ]
 }
 ```
 
-## `/api/users/:user_id` - GET
+## Example POST `/posts`
 
-This JSON API endpoint allows you to see details for a registered user based on `user_id`.
-Requests to this endpoint need to be authenticated using an API token from the `/api/token-auth` endpoint.
+```bash
+curl --request POST \
+  --url http://localhost:3333/posts \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{\n	"data": {\n		"type": "post",\n		"attributes": {\n			"title": "My Second Post",\n			"content": "This is another post from me..."\n		}\n	}\n}'
+```
 
-Here is an example response from this endpoint - `/api/users/1`
+Example Request Body:
 
 ```json
 {
+	"data": {
+		"type": "post",
+		"attributes": {
+			"title": "My Second Post",
+			"content": "This is another post from me..."
+		}
+	}
+}
+```
+
+Example Response Body:
+
+```json
+{
+  "links": {
+    "self": "/posts"
+  },
   "data": {
-    "type": "users",
-    "id": "1",
+    "type": "posts",
+    "id": 4,
     "attributes": {
-      "email": "admin@admin.com",
-      "password": "password"
+      "title": "My Second Post",
+      "content": "This is another post from me..."
+    },
+    "relationships": {
+      "comments": {
+        "links": {
+          "related": "/posts/4/comments"
+        }
+      }
     }
   }
 }
 ```
 
-## `/api/users/:user_id` - PATCH
+## Example GET `/posts/:post_id`
 
-This JSON API endpoint allows you to update attributes for a registered user based on `user_id`.
-Requests to this endpoint need to be authenticated using an API token from the `/api/token-auth` endpoint.
+Example cURL:
 
-Here is an example request to this endpoint - `/api/users/1`:
+```bash
+curl --request GET \
+  --url http://localhost:3333/posts/1
+```
 
-Request:
+Example Repsonse Body:
+
 ```json
 {
+  "links": {
+    "self": "/posts/1"
+  },
   "data": {
-    "type": "users",
-    "id": "1",
+    "type": "posts",
+    "id": 1,
     "attributes": {
-      "email": "general@admin.com"
+      "title": "My First Post",
+      "content": "This is a new post"
+    },
+    "relationships": {
+      "comments": {
+        "links": {
+          "related": "/posts/1/comments"
+        }
+      }
     }
   }
 }
 ```
 
-Response:
+## Example GET `/posts/:post_id/comments`
+
+```bash
+curl --request GET \
+  --url http://localhost:3333/posts/1/comments
+```
+
+Example Repsonse Body:
+
 ```json
 {
-  "data": {
-    "type": "users",
-    "id": "1",
-    "attributes": {
-      "email": "admin@admin.com",
-      "password": "password"
+  "links": {
+    "self": "/posts/1/comments"
+  },
+  "data": [
+    {
+      "type": "comments",
+      "id": 1,
+      "attributes": {
+        "username": "rtablada",
+        "content": "This is my first comment"
+      },
+      "relationships": {
+        "post": {
+          "links": {
+            "related": "/comments/1/post"
+          }
+        }
+      }
     }
-  }
-}
-```
-
-## `/api/users/:user_id` - PATCH
-
-This JSON API endpoint allows you to remove a registered user based on `user_id`.
-Requests to this endpoint need to be authenticated using an API token from the `/api/token-auth` endpoint.
-
-## `/api/token-auth` - POST
-
-This route allows users to authentcate and get back a JWT for the authorized user.
-
-The following is an example request:
-
-Request Body:
-```json
-{
-  "username": "admin@example.com",
-  "password": "password"
-}
-```
-
-Response Body:
-```json
-{
-  "token": "someLongJWTGoesHERE"
+  ]
 }
 ```
