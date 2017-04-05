@@ -20,16 +20,6 @@ class CommentController {
     response.json(this.rootSerializer.serializeMany(request.url(), comments, this.commentSerializer));
   }
 
-  * store(request, response) {
-    const input = request.jsonApi.getAttributesSnakeCase(attributes);
-    const foreignKeys = {
-      post_id: request.param('postId'),
-    };
-    const comment = yield Comment.create(Object.assign({}, input, foreignKeys));
-
-    response.json(this.rootSerializer.serializeMany(request.url(), comment, this.commentSerializer));
-  }
-
 }
 
 module.exports = CommentController;

@@ -3,12 +3,20 @@
 const Comment = use('App/Model/Comment');
 const attributes = ['username', 'content'];
 
+const RootSerializer  = require('../Serializers/RootSerializer');
+const CommentSerializer = require('../Serializers/Comment');
+
 class CommentController {
+
+  constructor() {
+    this.rootSerializer = new RootSerializer();
+    this.commentSerializer = new CommentSerializer();
+  }
 
   * index(request, response) {
     const comments = yield Comment.with('post').fetch();
 
-    response.jsonApi('Comment', comments);
+    response.json(this.rootSerializer.serializeMany(request.url(), comments, this.commentSerializer));
   }
 
   * store(request, response) {
@@ -18,14 +26,14 @@ class CommentController {
     };
     const comment = yield Comment.create(Object.assign({}, input, foreignKeys));
 
-    response.jsonApi('Comment', comment);
+    response.json(this.rootSerializer.serializeOne(request.url(), comment, this.commentSerializer));
   }
 
   * show(request, response) {
     const id = request.param('id');
     const comment = yield Comment.with('post').where({ id }).firstOrFail();
 
-    response.jsonApi('Comment', comment);
+    response.json(this.rootSerializer.serializeOne(request.url(), comment, this.commentSerializer));
   }
 
   * update(request, response) {
@@ -41,7 +49,7 @@ class CommentController {
     comment.fill(Object.assign({}, input, foreignKeys));
     yield comment.save();
 
-    response.jsonApi('Comment', comment);
+    response.json(this.rootSerializer.serializeOne(request.url(), comment, this.commentSerializer));
   }
 
   * destroy(request, response) {

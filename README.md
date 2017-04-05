@@ -195,3 +195,62 @@ Example Repsonse Body:
   ]
 }
 ```
+
+## Example POST `/comments`
+
+Example cURL Request:
+
+```bash
+curl --request POST \
+  --url http://localhost:3333/comments \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --data '{\n	"data": {\n		"attributes": {\n			"username":"rtablada",\n			"content":"This is a comment\n"\n		},\n		"relationships": {\n			"post": {\n				"data": {\n					"type": "posts",\n					"id":"1"\n				}\n			}\n		},\n		"type":"comments"\n	}\n}'
+```
+
+Example Request Body
+
+```json
+{
+	"data": {
+		"attributes": {
+			"username":"rtablada",
+			"content":"This is a comment\n"
+		},
+		"relationships": {
+			"post": {
+				"data": {
+					"type": "posts",
+					"id":"1"
+				}
+			}
+		},
+		"type":"comments"
+	}
+}
+```
+
+Example Response Body
+
+```json
+{
+  "links": {
+    "self": "/comments"
+  },
+  "data": {
+    "type": "comments",
+    "id": 8,
+    "attributes": {
+      "username": "rtablada",
+      "content": "This is a comment\n"
+    },
+    "relationships": {
+      "post": {
+        "links": {
+          "related": "/comments/8/post"
+        }
+      }
+    }
+  }
+}
+```
