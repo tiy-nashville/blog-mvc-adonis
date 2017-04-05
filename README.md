@@ -212,21 +212,21 @@ Example Request Body
 
 ```json
 {
-	"data": {
-		"attributes": {
-			"username":"rtablada",
-			"content":"This is a comment\n"
-		},
-		"relationships": {
-			"post": {
-				"data": {
-					"type": "posts",
-					"id":"1"
-				}
-			}
-		},
-		"type":"comments"
-	}
+  "data": {
+    "attributes": {
+      "username": "rtablada",
+      "content": "This is a comment\n"
+    },
+    "relationships": {
+      "post": {
+        "data": {
+          "type": "posts",
+          "id": "1"
+        }
+      }
+    },
+    "type": "comments"
+  }
 }
 ```
 
