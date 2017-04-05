@@ -21,6 +21,8 @@ const Route = use('Route');
 Route.resource('/posts', 'PostController')
   .only(['index', 'store', 'show', 'update', 'destroy']);
 
+Route.resource('/posts/:postId/comments', 'Post/CommentController')
+  .only(['index', 'store']);
 
 Route.post('/api/users', 'UserController.store');
 
