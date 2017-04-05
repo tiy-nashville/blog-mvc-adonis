@@ -17,6 +17,11 @@
 
 const Route = use('Route');
 
+
+Route.resource('/posts', 'PostController')
+  .only(['index', 'store', 'show', 'update', 'destroy']);
+
+
 Route.post('/api/users', 'UserController.store');
 
 Route.resource('/api/users', 'UserController')
